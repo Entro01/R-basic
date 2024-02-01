@@ -1,0 +1,15 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+dataset <- read.csv("C:\\Users\\shubh\\Desktop\\R-basic\\supermarket_sales\\dataset.csv", header = TRUE, sep = ",")
+head(dataset)
+
+```
+
+```{r}
+is.data.frame(dataset)
+
+```
