@@ -4,12 +4,119 @@ output: html_notebook
 ---
 
 ```{r}
+install.packages("dplyr")
+install.packages("ggplot2")
+install.packages("magrittr") 
+install.packages("tsibble")
+install.packages("forecast")
+install.packages("skimr")
+install.packages("correlationfunnel")
+install.packages("corrplot")
+```
+
+```{r}
+library(dplyr)
+library(ggplot2)
+library(magrittr)
+library(tsibble)
+library(forecast)
+library(skimr)
+library(correlationfunnel)
+library(corrplot)
+```
+
+```{r}
 dataset <- read.csv("C:\\Users\\shubh\\Desktop\\R-basic\\supermarket_sales\\dataset.csv", header = TRUE, sep = ",")
 head(dataset)
 
 ```
 
 ```{r}
-is.data.frame(dataset)
+skimr::skim(dataset)
+```
+
+```{r}
+#Tax 5% and gross income have the same values
+#Invoice ID and rating are irrelevant
+#Gross margin percentage have constant values
+dataset <- subset(dataset, select = -c(`gross.income`, `Invoice.ID`, `Rating`, `gross.margin.percentage`))
+```
+
+```{r}
+# Unit.price, Quantity, Tax.5., Total and cogs are the most relevant columns to product sales
+# where Unit.price, Quantity and Tax.5. are used to calculate Total where Unit.price * Quantity = cogs
+
+correlation_matrix <- cor(dataset[, c('Unit.price', 'Quantity', 'Total', 'Tax.5.', 'cogs')])
+print(correlation_matrix)
+corrplot(correlation_matrix, method = "color")
+```
+
+```{r}
+#Total, gross income and cogs are linearly proportional which is explained by the aforementioned calculation (Unit.price * Quantity (cogs) + Tax.5. = Total)
+dataset <- subset(dataset, select = -c(`Unit.price`, `Quantity`, `Tax.5.`, `cogs`))
+```
+
+```{r}
+# now we will analyze the effect of product line , customer type and time of day on the total sales (total)
+# removing the irrelevant features
+#dataset <- subset(dataset, select = -c(`Branch`, `City`, `Gender`, `Payment`, `Date`))
+```
+
+```{r}
+# modifying the values in Product.line for better readability
+unique(dataset$Product.line)
+```
+
+```{r}
+# modifying the values in Product.line for better readability
+dataset$Product.line <- ifelse(dataset$Product.line == "Health and beauty", "H & B",
+                              ifelse(dataset$Product.line == "Electronic accessories", "E & A",
+                                     ifelse(dataset$Product.line == "Home and lifestyle", "H & L",
+                                            ifelse(dataset$Product.line == "Sports and travel", "S & A",
+                                                   ifelse(dataset$Product.line == "Food and beverages", "F & B",
+                                                          ifelse(dataset$Product.line == "Fashion accessories", "F & A", dataset$Product.line))))))
+```
+
+```{r}
+# modifying the values in Customer.type for better readability
+dataset$Customer.type <- ifelse(dataset$Customer.type == "Member", "M",
+                              ifelse(dataset$Customer.type == "Normal", "N", dataset$Customer.type))
+```
+
+```{r}
+ggplot(dataset, aes(x=Customer.type, y=Total)) + 
+    geom_bar(stat="identity", fill="#69b3a2") +
+    theme_minimal() +
+    ggtitle("Total Sales by Customer Type")
+```
+
+```{r}
+ggplot(dataset, aes(x=Product.line, y=Total)) + 
+    geom_boxplot(fill="#69b3a2") +
+    theme_minimal() +
+    ggtitle("Distribution of Total Sales by Product Line")
+
+```
+
+```{r}
+ggplot(dataset, aes(x=Product.line, y=Total)) + 
+    geom_bar(stat="identity", fill="#69b3a2") +
+    theme_minimal() +
+    ggtitle("Total Sales by Product Line")
+```
+
+```{r}
+ggplot(dataset, aes(x=Time, y=Total)) + 
+    geom_line(group=1, color="#69b3a2") +
+    theme_minimal() +
+    ggtitle("Total Sales Over Time")
+```
+
+```{r}
+ggplot(dataset, aes(x=interaction(Customer.type, Product.line), y=Total)) + 
+    stat_summary(fun=mean, geom="bar", fill="#69b3a2") +
+    theme_minimal() +
+    ggtitle("Average Total Sales by Customer Type and Product Line")
+
 
 ```
