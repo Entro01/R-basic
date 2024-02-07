@@ -204,13 +204,9 @@ ggplot(dataset, aes(x=City, y=Total, fill=Sales)) +
 ```
 
 ```{r}
-# Create the bar chart
-p <- ggplot(dataset, aes(x=Date, y=Total, fill=Sales)) +  
-    geom_bar(stat='identity', position='dodge') +
+ggplot(dataset, aes(x=Date, y=Total, color=Time)) +  
+    geom_point() +
     theme_minimal() +
-    ggtitle("Total Sales by Product Line and Sales Class")
-
-# Adjust the breaks of the x-axis to display fewer labels
-p + scale_x_discrete(breaks = seq(1, length(unique(dataset$Date)), by =  2))
+    ggtitle("Scatter Plot of Date vs Total colored by Time")
 
 ```
