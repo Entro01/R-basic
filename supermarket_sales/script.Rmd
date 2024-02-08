@@ -38,6 +38,20 @@ skimr::skim(dataset)
 ```
 
 ```{r}
+# Assuming 'dataset' is your dataframe
+exclude_cols <- c("Date", "Time", "Invoice.ID")
+
+for (col in names(dataset)) {
+  if (!col %in% exclude_cols && (is.factor(dataset[[col]]) || is.character(dataset[[col]]))) {
+    cat("\nTable for column:", col, "\n")
+    print(table(dataset[[col]]))
+  }
+}
+
+
+```
+
+```{r}
 #Tax 5% and gross income have the same values
 #Invoice ID and rating are irrelevant
 #Gross margin percentage have constant values
@@ -209,4 +223,79 @@ ggplot(dataset, aes(x=Date, y=Total, color=Time)) +
     theme_minimal() +
     ggtitle("Scatter Plot of Date vs Total colored by Time")
 
+```
+
+```{r}
+# First, ensure that both 'Product.line' and 'Sales' are factors
+dataset$Product.line <- as.factor(dataset$Product.line)
+dataset$Sales <- as.factor(dataset$Sales)
+
+# Create the contingency table
+contingency_table <- table(dataset$Product.line, dataset$Sales)
+
+# Perform the Chi-square test of independence
+chi_square_result <- chisq.test(contingency_table)
+
+# Print the results
+print(chi_square_result)
+```
+
+```{r}
+# First, ensure that both 'Customer.type' and 'Sales' are factors
+dataset$Customer.type <- as.factor(dataset$Customer.type)
+dataset$Sales <- as.factor(dataset$Sales)
+
+# Create the contingency table
+contingency_table <- table(dataset$Customer.type, dataset$Sales)
+
+# Perform the Chi-square test of independence
+chi_square_result <- chisq.test(contingency_table)
+
+# Print the results
+print(chi_square_result)
+```
+
+```{r}
+# First, ensure that both 'Payment' and 'Sales' are factors
+dataset$Payment <- as.factor(dataset$Payment)
+dataset$Sales <- as.factor(dataset$Sales)
+
+# Create the contingency table
+contingency_table <- table(dataset$Payment, dataset$Sales)
+
+# Perform the Chi-square test of independence
+chi_square_result <- chisq.test(contingency_table)
+
+# Print the results
+print(chi_square_result)
+```
+
+```{r}
+# First, ensure that both 'Product line' and 'Sales' are factors
+dataset$Product.line <- as.factor(dataset$Product.line)
+dataset$Sales <- as.factor(dataset$Sales)
+
+# Create the contingency table
+contingency_table <- table(dataset$Product.line, dataset$Sales)
+
+# Perform the Chi-square test of independence
+chi_square_result <- chisq.test(contingency_table)
+
+# Print the results
+print(chi_square_result)
+```
+
+```{r}
+# First, ensure that both 'Time' and 'Sales' are factors
+dataset$Time <- as.factor(dataset$Time)
+dataset$Sales <- as.factor(dataset$Sales)
+
+# Create the contingency table
+contingency_table <- table(dataset$Time, dataset$Sales)
+
+# Perform the Chi-square test of independence
+chi_square_result <- chisq.test(contingency_table)
+
+# Print the results
+print(chi_square_result)
 ```
