@@ -33,9 +33,13 @@ describe(data)
 
 str(data)
 
+column_names <- colnames(data)
+print(column_names)
+
+
 # Select relevant columns for visualization
 selected_data <- data %>%
-  select(Income, Kidhome, Teenhome, Recency, MntWines, MntFruits, MntMeatProducts, MntFishProducts, MntSweetProducts, MntGoldProds)
+  dplyr::select(Income, Kidhome, Teenhome, Recency, MntWines, MntFruits, MntMeatProducts, MntFishProducts, MntSweetProducts, MntGoldProds)
 
 # Reshape data to long format
 long_data <- selected_data %>%
@@ -101,6 +105,67 @@ ggplot(data, aes(x = Total_accept)) +
 ggplot(data, aes(x = "", y = AOV)) +
   geom_boxplot(fill = "purple", outlier.color = "red") +
   labs(title = "Box Plot of Average Order Volume", x = "", y = "Average Order Volume") +
+  theme_minimal()
+
+# Bar Plot for Total Purchases by Income
+ggplot(data, aes(x = Income, y = Total_num_purchase)) +
+  geom_bar(stat = "identity", fill = "steelblue") +
+  labs(title = "Total Purchases by Income",
+       x = "Income",
+       y = "Total Purchases")
+
+# Line Chart for Total Purchases by Age Group
+ggplot(data, aes(x = Age, y = Total_num_purchase, group = Age)) +
+  geom_line() +
+  geom_point() +
+  labs(title = "Total Purchases by Age Group",
+       x = "Age Group",
+       y = "Total Purchases")
+
+# Bar Plot for Total Purchases by Marketing Campaigns Acceptance
+ggplot(data, aes(x = Total_accept, y = Total_num_purchase, fill = Total_accept)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Total Purchases by Marketing Campaigns Acceptance",
+       x = "Marketing Acceptance",
+       y = "Total Purchases")
+
+# Bar Plot for Total Purchases by Education Level
+data$education_level <- factor(data$education_Basic + data$education_Graduation + data$education_Master + data$education_PhD,
+                               levels = c(0, 1),
+                               labels = c("No Higher Education", "Higher Education"))
+
+ggplot(data, aes(x = education_level, y = Total_num_purchase, fill = education_level)) +
+  geom_bar(stat = "identity", position = position_stack(reverse = TRUE)) +
+  guides(fill = guide_legend(reverse = TRUE)) +
+  labs(title = "Total Purchases by Education Level",
+       x = "Education Level",
+       y = "Total Purchases",
+       fill = "Education Level") +
+  theme_minimal()
+
+# Bar Plot for Total Purchases by Number of Web Visits
+ggplot(data, aes(x = NumWebVisitsMonth, y = Total_num_purchase)) +
+  geom_bar(stat = "identity", fill = "steelblue") +
+  labs(title = "Total Purchases by Number of Web Visits",
+       x = "Number of Web Visits",
+       y = "Total Purchases")
+
+# Bar Plot for Total Purchases by Complain
+ggplot(data, aes(x = Complain, y = Total_num_purchase, fill = Complain)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Total Purchases by Complain",
+       x = "Complain",
+       y = "Total Purchases",
+       fill = "Complain") +
+  theme_minimal()
+
+# Bar Plot for Total Purchases by Recency
+ggplot(data, aes(x = Recency, y = Total_num_purchase, fill = Recency)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Total Purchases by Recency",
+       x = "Recency",
+       y = "Total Purchases",
+       fill = "Recency") +
   theme_minimal()
 
 # What factors are significantly related to the number of store purchases?
@@ -199,3 +264,80 @@ ggplot(cor_melted, aes(x = Var1, y = Var2, fill = value)) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   labs(x = "Variable", y = "Variable", fill = "Correlation")
+
+# Performing Chi-square Tests
+
+# Categorize Total_num_purchase into groups
+data$Total_num_purchase_group <- cut(data$Total_num_purchase, breaks = quantile(data$Total_num_purchase, probs = c(0, 0.33, 0.66, 1)), labels = c("Low", "Medium", "High"), include.lowest = TRUE)
+
+# Create a contingency table for Income and Total_num_purchase_group
+contingency_table <- table(data$Income, data$Total_num_purchase_group)
+
+# Perform Chi-square test of independence
+chisq_test_income <- chisq.test(contingency_table)
+
+# Print the results
+print(chisq_test_income)
+
+# Create a contingency table for Age and Total_num_purchase_group
+contingency_table <- table(data$Age, data$Total_num_purchase_group)
+
+# Perform Chi-square test of independence
+chisq_test_Age <- chisq.test(contingency_table)
+
+# Print the results
+print(chisq_test_Age)
+
+# Create a contingency table for marital_Married and Total_num_purchase_group
+contingency_table <- table(data$marital_Married, data$Total_num_purchase_group)
+
+# Perform Chi-square test of independence
+chisq_test_marital <- chisq.test(contingency_table)
+
+# Print the results
+print(chisq_test_marital)
+
+# Create a contingency table for Minorhome and Total_num_purchase_group
+contingency_table <- table(data$Minorhome, data$Total_num_purchase_group)
+
+# Perform Chi-square test of independence
+chisq_test_minor <- chisq.test(contingency_table)
+
+# Print the results
+print(chisq_test_minor)
+
+# Create a contingency table for Recency and Total_num_purchase_group
+contingency_table <- table(data$Recency, data$Total_num_purchase_group)
+
+# Perform Chi-square test of independence
+chisq_test_recency <- chisq.test(contingency_table)
+
+# Print the results
+print(chisq_test_recency)
+
+# Create a contingency table for Total_Mnt and Total_num_purchase_group
+contingency_table <- table(data$Total_Mnt, data$Total_num_purchase_group)
+
+# Perform Chi-square test of independence
+chisq_test_mnt <- chisq.test(contingency_table)
+
+# Print the results
+print(chisq_test_mnt)
+
+# Create a contingency table for Total_accept and Total_num_purchase_group
+contingency_table <- table(data$Total_accept, data$Total_num_purchase_group)
+
+# Perform Chi-square test of independence
+chisq_test_accept <- chisq.test(contingency_table)
+
+# Print the results
+print(chisq_test_accept)
+
+# Create a contingency table for AOV and Total_num_purchase_group
+contingency_table <- table(data$AOV, data$Total_num_purchase_group)
+
+# Perform Chi-square test of independence
+chisq_test_AOV <- chisq.test(contingency_table)
+
+# Print the results
+print(chisq_test_AOV)
