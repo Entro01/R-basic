@@ -323,10 +323,6 @@ cor_test(data, "NumStorePurchases", "Income", partial = TRUE,
 cor_test(data, "NumStorePurchases", "MntTotal", partial = TRUE, 
          partial_vars = c("Income", "Age", "marital_Married", "education_PhD"))
 
-# Perform a conditional correlation test between NumStorePurchases and AOV
-cor_test(data, "NumStorePurchases", "AOV", partial = TRUE, 
-         partial_vars = c("Income", "Age", "marital_Married", "education_PhD"))
-
 # Perform a conditional correlation test between Minorhome and Total_Mnt
 cor_test(data, "Minorhome", "Total_Mnt", partial = TRUE, 
          partial_vars = c("Income", "Age", "marital_Married", "education_PhD"))
@@ -335,16 +331,10 @@ cor_test(data, "Minorhome", "Total_Mnt", partial = TRUE,
 cor_test(data, "Total_num_purchase", "Total_accept", partial = TRUE, 
          partial_vars = c("Income", "Age", "marital_Married", "education_PhD"))
 
-# Perform a conditional correlation test between Total_Mnt and AOV
-cor_test(data, "Total_Mnt", "AOV", partial = TRUE, 
-         partial_vars = c("Income", "Age", "marital_Married", "education_PhD"))
-
-# Assuming you have variables for web, catalogue, and deals purchases similar to store purchases
 # Perform a conditional correlation test for web purchases
 cor_test(data, "NumWebPurchases", "Income", partial = TRUE, 
          partial_vars = c("Age", "marital_Married", "education_PhD"))
 
-# Repeat the process for catalogue and deals purchases
 # Perform a conditional correlation test for catalogue purchases
 cor_test(data, "NumCatalogPurchases", "Income", partial = TRUE, 
          partial_vars = c("Age", "marital_Married", "education_PhD"))
