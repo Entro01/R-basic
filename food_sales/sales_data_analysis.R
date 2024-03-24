@@ -195,11 +195,14 @@ ggplot(plot_data, aes(x = EducationCategory, y = Total_num_purchase, fill = Web_
 
 # Function to create a line chart for a specific type of purchase
 create_purchase_chart <- function(data, purchase_type) {
+  # Convert the purchase_type string to a symbol
+  purchase_type_sym <- sym(purchase_type)
+  
   # Filter data for the specific purchase type
   filtered_data <- data %>%
-    filter(!!sym(purchase_type) > 0) %>%
+    filter(!!purchase_type_sym > 0) %>%
     group_by(Age) %>%
-    summarise(Total_Purchases = sum(!!sym(purchase_type)))
+    summarise(Total_Purchases = sum(!!purchase_type_sym))
   
   # Create the line chart
   ggplot(filtered_data, aes(x = Age, y = Total_Purchases)) +
@@ -277,7 +280,7 @@ data_pdata <- pdata.frame(data, index = c("ID", "Time"))
 
 # Perform the fixed effects regression model for store purchases
 model_fixed_store <- plm(NumStorePurchases ~ Income + Age + marital_Married + education_PhD + 
-                           Minorhome + Recency + Total_Mnt + Total_num_purchase + Total_accept + AOV, 
+                           Minorhome + Recency + Total_Mnt + Total_num_purchase + Total_accept, 
                          data = data_pdata, model = "within")
 
 # Summary of the store purchases fixed effects model
@@ -286,7 +289,7 @@ summary(model_fixed_store)
 # Assuming you have variables for web, catalogue, and deals purchases similar to store purchases
 # Perform the fixed effects regression model for web purchases
 model_fixed_web <- plm(NumWebPurchases ~ Income + Age + marital_Married + education_PhD + 
-                         Minorhome + Recency + Total_Mnt + Total_num_purchase + Total_accept + AOV, 
+                         Minorhome + Recency + Total_Mnt + Total_num_purchase + Total_accept, 
                        data = data_pdata, model = "within")
 
 # Summary of the web purchases fixed effects model
@@ -295,7 +298,7 @@ summary(model_fixed_web)
 # Repeat the process for catalogue and deals purchases
 # Perform the fixed effects regression model for catalogue purchases
 model_fixed_catalogue <- plm(NumCatalogPurchases ~ Income + Age + marital_Married + education_PhD + 
-                               Minorhome + Recency + Total_Mnt + Total_num_purchase + Total_accept + AOV, 
+                               Minorhome + Recency + Total_Mnt + Total_num_purchase + Total_accept, 
                              data = data_pdata, model = "within")
 
 # Summary of the catalogue purchases fixed effects model
@@ -303,7 +306,7 @@ summary(model_fixed_catalogue)
 
 # Perform the fixed effects regression model for deals purchases
 model_fixed_deals <- plm(NumDealsPurchases ~ Income + Age + marital_Married + education_PhD + 
-                           Minorhome + Recency + Total_Mnt + Total_num_purchase + Total_accept + AOV, 
+                           Minorhome + Recency + Total_Mnt + Total_num_purchase + Total_accept, 
                          data = data_pdata, model = "within")
 
 # Summary of the deals purchases fixed effects model
